@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytix AI - Smart Parlay Generator</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #0e0e10;
+      color: #f5f5f5;
+      line-height: 1.6;
+    }
+    header {
+      background: #1f1f22;
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 1px solid #2e2e33;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin: 0;
+    }
+    .tagline {
+      color: #aaa;
+      font-size: 1rem;
+    }
+    .highlight {
+      padding: 2rem;
+      background: #18181b;
+    }
+    .highlight h2 {
+      margin-top: 0;
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+    .parlay-card {
+      display: grid;
+      gap: 1rem;
+    }
+    .game {
+      background: #2b2b2e;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .confidence {
+      display: block;
+      margin-top: 0.5rem;
+      color: #6be675;
+      font-weight: bold;
+    }
+    .countdown {
+      text-align: center;
+      margin: 2rem 0;
+    }
+    #timer {
+      font-size: 2rem;
+      color: #facc15;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      background: #1f1f22;
+      border-top: 1px solid #2e2e33;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌟 Analytix AI</h1>
+    <p class="tagline">Smarter Parlays. Real Data. Better Bets.</p>
+  </header>
+  <main>
+    <section class="highlight">
+      <h2>Today's Smart Parlay 📅</h2>
+      <div class="parlay-card">
+        <div class="game">
+          <p><strong>BYU vs Alabama</strong> – Over 171.5</p>
+          <span class="confidence">Sharp AI Value: 91%</span>
+        </div>
+        <div class="game">
+          <p><strong>Ole Miss 1H +1.5</strong> vs Michigan State</p>
+          <span class="confidence">Sharp AI Value: 87%</span>
+        </div>
+        <div class="game">
+          <p><strong>Arizona ML</strong> vs Duke</p>
+          <span class="confidence">Sharp AI Value: 79%</span>
+        </div>
+        <div class="game">
+          <p><strong>Houston ML</strong> vs Purdue</p>
+          <span class="confidence">Sharp AI Value: 83%</span>
+        </div>
+      </div>
+    </section>
+    <section class="countdown">
+      <h3>Next Parlay Drop In:</h3>
+      <div id="timer">Loading...</div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Analytix AI. Built for bettors by brains.</p>
+  </footer>
+  <script>
+    // Simple countdown to midnight EST
+    function updateCountdown() {
+      console.log("updateCountdown triggered");
+      const now = new Date();
+      console.log("Current time:", now);
+      const nextDrop = new Date();
+      nextDrop.setHours(24, 0, 0, 0); // Midnight
+      console.log("Next drop time:", nextDrop);
+
+      const diff = nextDrop - now;
+      console.log("Milliseconds until next drop:", diff);
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      console.log(`Time remaining: ${hours}h ${minutes}m ${seconds}s`);
+
+      document.getElementById('timer').innerText =
+        `${hours}h ${minutes}m ${seconds}s`;
+    }
+    console.log("Initializing countdown interval");
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
