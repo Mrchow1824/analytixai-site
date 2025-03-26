@@ -97,6 +97,14 @@
         </div>
       </div>
     </section>
+
+    <!-- 🔥 Live Auto Picks Section -->
+    <section class="highlight" id="auto-picks">
+      <h2>Auto Picks of the Day 🧠</h2>
+      <div id="autoParlay"></div>
+    </section>
+
+    <!-- ⏱ Countdown -->
     <section class="countdown">
       <h3>Next Parlay Drop In:</h3>
       <div id="timer">Loading...</div>
@@ -105,8 +113,9 @@
   <footer>
     <p>&copy; 2025 Analytix AI. Built for bettors by brains.</p>
   </footer>
+
+  <!-- Countdown Script -->
   <script>
-    // Simple countdown to midnight EST
     function updateCountdown() {
       console.log("updateCountdown triggered");
       const now = new Date();
@@ -131,5 +140,9 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
   </script>
+
+  <!-- ✅ LIVE ODDS SCRIPT -->
+  <script type="module" src="fetchOdds.js"></script>
 </body>
 </html>
+
