@@ -1,0 +1,38 @@
+.game {
+  padding: 15px;
+  margin: 10px 0;
+  background: #1a1a1a;
+  border-radius: 8px;
+  color: #fff;
+  transition: transform 0.2s;
+}
+.game:hover {
+  transform: scale(1.02);
+}
+.hot-pick {
+  border: 2px solid #ff4444;
+  box-shadow: 0 0 10px #ff4444;
+}
+.confidence {
+  font-size: 0.9em;
+  color: #0f0;
+}
+.favorite-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+.favorited {
+  color: #ffd700;
+}
+.loading {
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+}
+.error {
+  color: #ff4444;
+  font-weight: bold;
+  text-align: center;
+}
