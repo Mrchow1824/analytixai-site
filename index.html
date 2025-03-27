@@ -3,146 +3,373 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Analytix AI - Smart Parlay Generator</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="description" content="Analytix AI - Next Generation Smart Betting Platform">
+  <title>Analytix AI - Precision Betting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700&family=SF+Pro+Text:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-bg: #ffffff;
+      --secondary-bg: #f5f5f7;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --text-primary: #1d1d1f;
+      --text-secondary: #515154;
+      --accent-blue: #0071e3;
+      --accent-green: #34c759;
+      --accent-purple: #5856d6;
+      --shadow: rgba(0, 0, 0, 0.08);
+      --highlight: #ffcc00;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #0e0e10;
-      color: #f5f5f5;
-      line-height: 1.6;
+      font-family: 'SF Pro Display', -apple-system, sans-serif;
+      background: var(--primary-bg);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
     }
+
     header {
-      background: #1f1f22;
-      padding: 2rem;
+      background: rgba(245, 245, 247, 0.95);
+      backdrop-filter: saturate(180%) blur(20px);
+      padding: 1rem 2rem;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo::before {
+      content: '';
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(45deg, var(--accent-blue), var(--accent-green));
+      border-radius: 50%;
+    }
+
+    nav {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      font-family: 'SF Pro Text', sans-serif;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background: var(--accent-blue);
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--accent-blue);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    main {
+      max-width: 1400px;
+      margin: 6rem auto 2rem;
+      padding: 0 2rem;
+      flex: 1;
+    }
+
+    .hero {
       text-align: center;
-      border-bottom: 1px solid #2e2e33;
+      padding: 4rem 0 2rem;
+      background: linear-gradient(to bottom, var(--secondary-bg), var(--primary-bg));
     }
-    h1 {
-      font-size: 2.5rem;
-      margin: 0;
-    }
-    .tagline {
-      color: #aaa;
-      font-size: 1rem;
-    }
-    .highlight {
-      padding: 2rem;
-      background: #18181b;
-    }
-    .highlight h2 {
-      margin-top: 0;
-      font-size: 1.75rem;
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       margin-bottom: 1rem;
+      background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .highlight {
+      margin: 4rem 0;
+    }
+
+    h2 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      width: 50%;
+      height: 4px;
+      bottom: -8px;
+      left: 0;
+      background: linear-gradient(to right, var(--accent-blue), var(--accent-green));
+      border-radius: 2px;
+    }
+
     .parlay-card {
       display: grid;
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
     }
+
     .game {
-      background: #2b2b2e;
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      background: var(--card-bg);
+      padding: 1.75rem;
+      border-radius: 24px;
+      box-shadow: 0 8px 24px var(--shadow);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
+
+    .game:hover {
+      transform: scale(1.03);
+      box-shadow: 0 12px 32px var(--shadow);
+    }
+
+    .game p {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .game p::before {
+      content: '🏀';
+      font-size: 1.5rem;
+    }
+
     .confidence {
-      display: block;
-      margin-top: 0.5rem;
-      color: #6be675;
-      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent-green);
+      background: rgba(52, 199, 89, 0.1);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      width: fit-content;
     }
+
     .countdown {
       text-align: center;
-      margin: 2rem 0;
+      padding: 3rem 2rem;
+      background: var(--secondary-bg);
+      border-radius: 24px;
+      margin: 4rem 0;
+      box-shadow: 0 8px 24px var(--shadow);
     }
+
+    .countdown h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
     #timer {
-      font-size: 2rem;
-      color: #facc15;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--highlight);
+      letter-spacing: 0.1rem;
+      font-family: 'SF Pro Text', sans-serif;
+      background: linear-gradient(45deg, var(--highlight), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
+
     footer {
+      background: var(--secondary-bg);
+      padding: 3rem 2rem;
       text-align: center;
-      padding: 2rem;
-      font-size: 0.9rem;
-      background: #1f1f22;
-      border-top: 1px solid #2e2e33;
+      color: var(--text-secondary);
+      font-family: 'SF Pro Text', sans-serif;
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      .parlay-card {
+        grid-template-columns: 1fr;
+      }
+      nav {
+        gap: 1.5rem;
+      }
+      nav a {
+        font-size: 1rem;
+      }
+      #timer {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav {
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🌟 Analytix AI</h1>
-    <p class="tagline">Smarter Parlays. Real Data. Better Bets.</p>
+  <header role="banner">
+    <div class="header-content">
+      <div class="logo">Analytix AI</div>
+      <nav>
+        <a href="#parlays">Parlays</a>
+        <a href="#auto-picks">Live Picks</a>
+        <a href="#stats">Stats</a>
+        <a href="#premium">Premium</a>
+      </nav>
+    </div>
   </header>
+
   <main>
-    <section class="highlight">
-      <h2>Today's Smart Parlay 📅</h2>
+    <section class="hero">
+      <h1>Precision Betting, AI-Powered</h1>
+      <p>Transform your betting strategy with real-time analytics and smart predictions.</p>
+    </section>
+
+    <section class="highlight" aria-labelledby="parlay-heading">
+      <h2 id="parlay-heading">Today's Smart Parlay</h2>
       <div class="parlay-card">
-        <div class="game">
-          <p><strong>BYU vs Alabama</strong> – Over 171.5</p>
-          <span class="confidence">Sharp AI Value: 91%</span>
-        </div>
-        <div class="game">
-          <p><strong>Ole Miss 1H +1.5</strong> vs Michigan State</p>
-          <span class="confidence">Sharp AI Value: 87%</span>
-        </div>
-        <div class="game">
-          <p><strong>Arizona ML</strong> vs Duke</p>
-          <span class="confidence">Sharp AI Value: 79%</span>
-        </div>
-        <div class="game">
-          <p><strong>Houston ML</strong> vs Purdue</p>
-          <span class="confidence">Sharp AI Value: 83%</span>
-        </div>
+        <article class="game">
+          <p>BYU vs Alabama – Over 171.5</p>
+          <span class="confidence">91% Confidence</span>
+        </article>
+        <article class="game">
+          <p>Ole Miss 1H +1.5 vs Michigan State</p>
+          <span class="confidence">87% Confidence</span>
+        </article>
+        <article class="game">
+          <p>Arizona ML vs Duke</p>
+          <span class="confidence">79% Confidence</span>
+        </article>
+        <article class="game">
+          <p>Houston ML vs Purdue</p>
+          <span class="confidence">83% Confidence</span>
+        </article>
       </div>
     </section>
 
-    <!-- 🔥 Live Auto Picks Section -->
-    <section class="highlight" id="auto-picks">
-      <h2>Auto Picks of the Day 🧠</h2>
-      <div id="autoParlay"></div>
+    <section class="highlight" id="auto-picks" aria-labelledby="auto-picks-heading">
+      <h2 id="auto-picks-heading">Live Auto Picks</h2>
+      <div id="autoParlay" class="parlay-card" role="region" aria-live="polite"></div>
     </section>
 
-    <!-- ⏱ Countdown -->
-    <section class="countdown">
-      <h3>Next Parlay Drop In:</h3>
-      <div id="timer">Loading...</div>
+    <section class="countdown" aria-labelledby="countdown-heading">
+      <h3 id="countdown-heading">Next Parlay Drop</h3>
+      <div id="timer" aria-live="assertive">00h 00m 00s</div>
     </section>
   </main>
-  <footer>
-    <p>&copy; 2025 Analytix AI. Built for bettors by brains.</p>
+
+  <footer role="contentinfo">
+    <div class="footer-content">
+      <p>© 2025 Analytix AI. Elevating betting through artificial intelligence.</p>
+    </div>
   </footer>
 
-  <!-- Countdown Script -->
   <script>
+    'use strict';
+
     function updateCountdown() {
-      console.log("updateCountdown triggered");
       const now = new Date();
-      console.log("Current time:", now);
       const nextDrop = new Date();
-      nextDrop.setHours(24, 0, 0, 0); // Midnight
-      console.log("Next drop time:", nextDrop);
+      nextDrop.setHours(24, 0, 0, 0);
+      
+      if (now > nextDrop) {
+        nextDrop.setDate(nextDrop.getDate() + 1);
+      }
 
       const diff = nextDrop - now;
-      console.log("Milliseconds until next drop:", diff);
-
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      console.log(`Time remaining: ${hours}h ${minutes}m ${seconds}s`);
-
-      document.getElementById('timer').innerText =
-        `${hours}h ${minutes}m ${seconds}s`;
+      const timer = document.getElementById('timer');
+      if (timer) {
+        timer.textContent = `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+      }
     }
-    console.log("Initializing countdown interval");
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+      } catch (error) {
+        console.error('Countdown initialization failed:', error);
+      }
+    });
   </script>
 
-  <!-- ✅ LIVE ODDS SCRIPT -->
-  <script type="module" src="fetchOdds.js"></script>
+  <script type="module" src="fetchOdds.js" defer></script>
 </body>
 </html>
-
