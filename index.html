@@ -1,105 +1,99 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AnalytixAI – Bet Smarter</title>
+  <title>AnalytixAI – Intelligent Betting</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <style>
     body {
-      background: radial-gradient(ellipse at bottom, #0d0d2b 0%, #000 100%);
-      overflow-x: hidden;
+      background: linear-gradient(to bottom, #0e1623, #1c2431);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     }
 
-    .stars {
-      width: 100%;
-      height: 100%;
-      background: transparent url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/media/stars.png') repeat;
-      position: fixed;
-      z-index: -1;
-      animation: moveStars 300s linear infinite;
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
-    @keyframes moveStars {
-      from { background-position: 0 0; }
-      to { background-position: -10000px 5000px; }
+    .title-glow {
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.1);
     }
 
-    .neon-text {
-      text-shadow: 0 0 5px #00ffe0, 0 0 10px #00ffe0, 0 0 20px #00ffe0;
-    }
-
-    .card {
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid #00ffe0;
-      box-shadow: 0 0 15px #00ffe066;
+    .card-shadow {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
   </style>
 </head>
 
-<body id="app" class="text-white font-sans">
-  <div class="stars"></div>
+<body id="app" class="text-white">
+  <div class="min-h-screen flex flex-col justify-between">
 
-  <!-- Header -->
-  <header class="flex justify-between items-center p-6 bg-opacity-30 backdrop-blur-sm">
-    <h1 class="text-3xl font-bold neon-text">AnalytixAI</h1>
-    <button @click="toggleTheme" class="bg-black px-4 py-2 rounded border border-cyan-400 hover:bg-cyan-600 transition">Toggle Theme</button>
-  </header>
+    <!-- Header -->
+    <header class="flex justify-between items-center px-6 py-4 glass sticky top-0 z-20">
+      <h1 class="text-2xl font-semibold title-glow">AnalytixAI</h1>
+      <button @click="toggleTheme" class="text-sm px-4 py-2 border rounded border-gray-400 hover:bg-white hover:text-black transition">Toggle Theme</button>
+    </header>
 
-  <!-- Hero -->
-  <section class="text-center py-16 px-6">
-    <h2 class="text-4xl font-extrabold neon-text mb-4">Next-Gen AI Sports Betting</h2>
-    <p class="text-xl text-cyan-300 mb-6">Real-time data. Predictive analytics. Interstellar odds.</p>
-  </section>
+    <!-- Hero -->
+    <section class="text-center py-20 px-6">
+      <h2 class="text-4xl md:text-5xl font-bold title-glow mb-4">Intelligent Sports Betting Powered by AI</h2>
+      <p class="text-lg text-gray-300 max-w-xl mx-auto mb-8">Predictive analytics. Live data. Smart picks. Designed for clarity, confidence, and class.</p>
+      <a href="#parlay" class="inline-block bg-white text-black font-semibold px-6 py-3 rounded shadow hover:bg-gray-100 transition">See Today’s Top Parlay</a>
+    </section>
 
-  <!-- Sport Picker -->
-  <section class="px-6 mb-12">
-    <h3 class="text-2xl font-semibold mb-4">Choose Your Sport</h3>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-      <div class="card p-6 rounded hover:scale-105 transition text-center cursor-pointer">🏀 Basketball</div>
-      <div class="card p-6 rounded hover:scale-105 transition text-center cursor-pointer">🏈 Football</div>
-      <div class="card p-6 rounded hover:scale-105 transition text-center cursor-pointer">⚾ Baseball</div>
-      <div class="card p-6 rounded hover:scale-105 transition text-center cursor-pointer">⚽ Soccer</div>
-    </div>
-  </section>
-
-  <!-- Live Odds Center -->
-  <section class="px-6 mb-12">
-    <h3 class="text-2xl font-semibold mb-4">Live Odds</h3>
-    <div class="card p-6 rounded space-y-4">
-      <div class="flex justify-between">
-        <span class="text-lg">Lakers vs Celtics</span>
-        <span class="text-cyan-400 font-bold">+4.5 | O/U 217.5</span>
+    <!-- Sport Picker -->
+    <section class="px-6 mb-12 max-w-5xl mx-auto">
+      <h3 class="text-2xl font-semibold mb-6">Select Your Sport</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="glass rounded-lg p-6 text-center hover:scale-105 transition card-shadow">🏀 Basketball</div>
+        <div class="glass rounded-lg p-6 text-center hover:scale-105 transition card-shadow">🏈 Football</div>
+        <div class="glass rounded-lg p-6 text-center hover:scale-105 transition card-shadow">⚾ Baseball</div>
+        <div class="glass rounded-lg p-6 text-center hover:scale-105 transition card-shadow">⚽ Soccer</div>
       </div>
-      <div class="flex justify-between">
-        <span class="text-lg">Cowboys vs Eagles</span>
-        <span class="text-cyan-400 font-bold">-3 | ML +145</span>
-      </div>
-      <div class="flex justify-between">
-        <span class="text-lg">Real Madrid vs Man City</span>
-        <span class="text-cyan-400 font-bold">Draw +260</span>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- AI Best Parlay -->
-  <section class="px-6 mb-20">
-    <h3 class="text-2xl font-semibold mb-4">🔥 AI Parlay of the Day</h3>
-    <div class="card p-6 rounded space-y-2">
-      <p>✅ Knicks to win (+120)</p>
-      <p>✅ Chiefs to cover -3.5 (-110)</p>
-      <p>✅ Dodgers over 7.5 runs (-105)</p>
-      <div class="mt-4 text-cyan-300 font-semibold">
-        Total Payout: <span class="text-green-400">6.2x</span> | Confidence: <span class="text-yellow-300">83%</span>
+    <!-- Live Odds -->
+    <section class="px-6 mb-12 max-w-5xl mx-auto">
+      <h3 class="text-2xl font-semibold mb-4">Live Game Odds</h3>
+      <div class="glass rounded-lg p-6 space-y-4 card-shadow">
+        <div class="flex justify-between">
+          <span class="text-lg">Lakers vs Celtics</span>
+          <span class="text-blue-300 font-semibold">+4.5 | O/U 217.5</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-lg">Cowboys vs Eagles</span>
+          <span class="text-blue-300 font-semibold">-3 | ML +145</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-lg">Real Madrid vs Man City</span>
+          <span class="text-blue-300 font-semibold">Draw +260</span>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer class="text-center py-6 text-cyan-300 text-sm bg-black bg-opacity-40 backdrop-blur">
-    🚀 Powered by AI | © 2025 AnalytixAI
-  </footer>
+    <!-- Parlay Section -->
+    <section class="px-6 mb-16 max-w-5xl mx-auto" id="parlay">
+      <h3 class="text-2xl font-semibold mb-4">AI’s Best Parlay</h3>
+      <div class="glass rounded-lg p-6 space-y-2 card-shadow">
+        <p>✅ Knicks to win (+120)</p>
+        <p>✅ Chiefs to cover -3.5 (-110)</p>
+        <p>✅ Dodgers over 7.5 runs (-105)</p>
+        <div class="mt-4 text-blue-200 font-medium">
+          Total Payout: <span class="text-green-300">6.2x</span> | Confidence: <span class="text-yellow-200">83%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="glass text-center p-4 text-sm text-gray-400">
+      © 2025 AnalytixAI. Built for precision.
+    </footer>
+  </div>
 
   <script>
     const { createApp } = Vue;
