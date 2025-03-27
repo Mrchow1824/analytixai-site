@@ -7,15 +7,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
-
 <body id="app" class="bg-[#0e1623] text-white font-sans">
   <div class="min-h-screen py-10 px-6 max-w-6xl mx-auto">
+    <h1 class="text-4xl font-extrabold mb-4 text-center">AnalytixAI</h1>
+    <p class="text-center text-gray-400 mb-10">AI-enhanced Sportsbook Insights — Real-Time, Personalized, Powerful</p>
 
-    <!-- HEADER -->
-    <h1 class="text-4xl font-extrabold mb-4 tracking-tight text-center">AnalytixAI</h1>
-    <p class="text-center text-gray-400 mb-10">Smarter Sports Betting Powered by Real-Time AI Odds</p>
-
-    <!-- SPORT TOGGLE -->
+    <!-- Toggle -->
     <div class="flex justify-center gap-4 mb-10">
       <button
         v-for="s in ['basketball_nba', 'football_nfl', 'baseball_mlb']"
@@ -31,15 +28,13 @@
       </button>
     </div>
 
-    <!-- ODDS SECTION -->
+    <!-- Odds -->
     <div v-if="loading" class="text-center text-gray-400">Loading odds...</div>
     <div v-if="error" class="text-center text-red-400">{{ error }}</div>
 
     <div v-if="!loading && games.length" class="space-y-10">
       <div v-for="game in games" :key="game.id" class="glass border border-gray-700 rounded-xl p-6 shadow">
         <h2 class="text-xl font-bold mb-2">{{ game.teams[0] }} vs {{ game.teams[1] }}</h2>
-        <p class="text-sm text-gray-400 mb-4">Tap to add picks</p>
-
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div
             v-for="(market, key) in game.bestMarkets"
@@ -51,7 +46,7 @@
               'border-gray-600 hover:border-blue-300 hover:bg-blue-800/20': !selectedPicks.includes(`${market.name} - ${market.sportsbook}`)
             }"
           >
-            <p class="font-semibold text-white">{{ market.name }}</p>
+            <p class="font-semibold">{{ market.name }}</p>
             <p class="text-blue-300 text-xl mt-1">{{ market.price > 0 ? '+' + market.price : market.price }}</p>
             <p class="text-xs text-gray-400 mt-1">{{ market.sportsbook }}</p>
             <span class="text-[10px] text-emerald-300 mt-2 inline-block">Best Line</span>
@@ -60,23 +55,19 @@
       </div>
     </div>
 
-    <!-- PICKS + MODAL -->
+    <!-- Picks -->
     <div v-if="selectedPicks.length" class="mt-12">
       <h3 class="text-xl font-semibold mb-2">Your Picks</h3>
       <ul class="list-disc text-blue-200 ml-6 mb-4">
         <li v-for="(pick, i) in selectedPicks" :key="i">{{ pick }}</li>
       </ul>
       <div class="flex gap-3">
-        <button @click="openParlay" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition font-semibold">
-          Open Parlay
-        </button>
-        <button @click="clearPicks" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-400 transition text-sm">
-          Clear
-        </button>
+        <button @click="openParlay" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition font-semibold">Open Parlay</button>
+        <button @click="clearPicks" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-400 transition text-sm">Clear</button>
       </div>
     </div>
 
-    <!-- PARLAY MODAL -->
+    <!-- Parlay Modal -->
     <div v-if="showModal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
       <div class="bg-white text-black p-6 rounded-lg max-w-md w-full">
         <h2 class="text-xl font-bold mb-2">Parlay Summary</h2>
@@ -89,10 +80,9 @@
     </div>
   </div>
 
-  <!-- VUE SCRIPT -->
+  <!-- Vue Logic -->
   <script>
     const { createApp } = Vue;
-
     createApp({
       data() {
         return {
@@ -136,14 +126,10 @@
         async fetchOdds() {
           this.loading = true;
           this.error = null;
-          const API_KEY = "3daa707ceb363f36b79f44bedc6abe2f";
-          const url = `https://api.the-odds-api.com/v4/sports/${this.sport}/odds?apiKey=${API_KEY}&regions=us&markets=h2h,spreads,totals&oddsFormat=american`;
-
           try {
-            const res = await fetch(url);
+            const res = await fetch(`/api/fetchOdds?sport=${this.sport}`);
             if (!res.ok) throw new Error("Failed to fetch odds");
             const data = await res.json();
-
             this.games = data.map(game => {
               const bestMarkets = {};
               ["h2h", "spreads", "totals"].forEach(type => {
@@ -166,13 +152,8 @@
                   }
                 });
               });
-              return {
-                id: game.id,
-                teams: game.teams,
-                bestMarkets,
-              };
+              return { id: game.id, teams: game.teams, bestMarkets };
             });
-
             this.loading = false;
           } catch (err) {
             this.error = err.message;
