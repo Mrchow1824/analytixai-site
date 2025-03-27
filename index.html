@@ -3,77 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AnalytixAI – Smarter Sports Betting</title>
+  <title>AnalytixAI – Bet Smarter</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script>
-    // Theme toggle logic
-    if (localStorage.getItem('theme') === 'light') {
-      document.documentElement.classList.remove('dark');
+  <style>
+    body {
+      background: radial-gradient(ellipse at bottom, #0d0d2b 0%, #000 100%);
+      overflow-x: hidden;
     }
-  </script>
+
+    .stars {
+      width: 100%;
+      height: 100%;
+      background: transparent url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/media/stars.png') repeat;
+      position: fixed;
+      z-index: -1;
+      animation: moveStars 300s linear infinite;
+    }
+
+    @keyframes moveStars {
+      from { background-position: 0 0; }
+      to { background-position: -10000px 5000px; }
+    }
+
+    .neon-text {
+      text-shadow: 0 0 5px #00ffe0, 0 0 10px #00ffe0, 0 0 20px #00ffe0;
+    }
+
+    .card {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #00ffe0;
+      box-shadow: 0 0 15px #00ffe066;
+    }
+  </style>
 </head>
 
-<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300" id="app">
-  <div class="min-h-screen flex flex-col">
-    <!-- Navbar -->
-    <nav class="flex items-center justify-between p-6 bg-white dark:bg-gray-800 shadow-md">
-      <h1 class="text-2xl font-bold tracking-tight">AnalytixAI</h1>
-      <div class="flex items-center gap-4">
-        <button @click="toggleTheme" class="px-3 py-1 border rounded">Toggle Theme</button>
-        <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500">Login</button>
+<body id="app" class="text-white font-sans">
+  <div class="stars"></div>
+
+  <!-- Header -->
+  <header class="flex justify-between items-center p-6 bg-opacity-30 backdrop-blur-sm">
+    <h1 class="text-3xl font-bold neon-text">AnalytixAI</h1>
+    <button @click="toggleTheme" class="bg-black px-4 py-2 rounded border border-cyan-400 hover:bg-cyan-600 transition">Toggle Theme</button>
+  </header>
+
+  <!-- Hero -->
+  <section class="text-center py-16 px-6">
+    <h2 class="text-4xl font-extrabold neon-text mb-4">Next-Gen AI Sports Betting</h2>
+    <p class="text-xl text-cyan-300 mb-6">Real-time data. Predictive analytics. Interstellar odds.</p>
+  </section>
+
+  <!-- Sport Picker -->
+  <section class="px-6 mb-12">
+    <h3 class="text-2xl font-semibold mb-4">Choose Your Sport</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="card p-6 rounded hover:scale-105 transition text-center cursor-pointer">🏀 Basketball</div>
+      <div class="card p-6 rounded hover:scale-105 transition text-center cursor-pointer">🏈 Football</div>
+      <div class="card p-6 rounded hover:scale-105 transition text-center cursor-pointer">⚾ Baseball</div>
+      <div class="card p-6 rounded hover:scale-105 transition text-center cursor-pointer">⚽ Soccer</div>
+    </div>
+  </section>
+
+  <!-- Live Odds Center -->
+  <section class="px-6 mb-12">
+    <h3 class="text-2xl font-semibold mb-4">Live Odds</h3>
+    <div class="card p-6 rounded space-y-4">
+      <div class="flex justify-between">
+        <span class="text-lg">Lakers vs Celtics</span>
+        <span class="text-cyan-400 font-bold">+4.5 | O/U 217.5</span>
       </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="text-center py-20 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-      <h2 class="text-4xl font-bold mb-4">Smarter Sports Betting Through AI</h2>
-      <p class="text-lg mb-6">Real-time data, predictive analytics, and machine learning at your fingertips.</p>
-      <a href="#simulator" class="inline-block px-6 py-3 bg-white text-blue-600 font-bold rounded shadow hover:bg-gray-100">Try the Betting Simulator</a>
-    </section>
-
-    <!-- Real-Time Feed -->
-    <section class="p-6" id="feed">
-      <h3 class="text-2xl font-semibold mb-4">Live Betting Feed</h3>
-      <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded shadow">
-        <p class="text-sm">🔄 Connecting to live feed...</p>
-        <!-- Replace with actual WebSocket data -->
+      <div class="flex justify-between">
+        <span class="text-lg">Cowboys vs Eagles</span>
+        <span class="text-cyan-400 font-bold">-3 | ML +145</span>
       </div>
-    </section>
-
-    <!-- Betting Simulator -->
-    <section class="p-6 bg-white dark:bg-gray-950" id="simulator">
-      <h3 class="text-2xl font-semibold mb-4">Interactive Betting Simulator</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded shadow">
-          <p class="mb-2">🧠 Select your picks</p>
-          <!-- Add drag/drop UI or checkboxes -->
-          <ul>
-            <li><input type="checkbox" /> Lakers vs Celtics – Lakers Win</li>
-            <li><input type="checkbox" /> Yankees vs Red Sox – Over 8.5 Runs</li>
-          </ul>
-        </div>
-        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded shadow">
-          <p class="mb-2">📊 AI Risk/Reward Analysis</p>
-          <p>Estimated Payout: <strong>3.5x</strong></p>
-          <p>Win Probability: <strong>72%</strong></p>
-        </div>
+      <div class="flex justify-between">
+        <span class="text-lg">Real Madrid vs Man City</span>
+        <span class="text-cyan-400 font-bold">Draw +260</span>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- AI Insights -->
-    <section class="p-6" id="ai-insights">
-      <h3 class="text-2xl font-semibold mb-4">🔍 AI Insights</h3>
-      <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded shadow">
-        <p>💡 Today's Smart Bet: Take the Knicks spread (+5) — 84% win confidence.</p>
+  <!-- AI Best Parlay -->
+  <section class="px-6 mb-20">
+    <h3 class="text-2xl font-semibold mb-4">🔥 AI Parlay of the Day</h3>
+    <div class="card p-6 rounded space-y-2">
+      <p>✅ Knicks to win (+120)</p>
+      <p>✅ Chiefs to cover -3.5 (-110)</p>
+      <p>✅ Dodgers over 7.5 runs (-105)</p>
+      <div class="mt-4 text-cyan-300 font-semibold">
+        Total Payout: <span class="text-green-400">6.2x</span> | Confidence: <span class="text-yellow-300">83%</span>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer class="mt-auto p-6 bg-gray-200 dark:bg-gray-800 text-center text-sm text-gray-600 dark:text-gray-400">
-      © 2025 AnalytixAI. Built with intelligence.
-    </footer>
-  </div>
+  <!-- Footer -->
+  <footer class="text-center py-6 text-cyan-300 text-sm bg-black bg-opacity-40 backdrop-blur">
+    🚀 Powered by AI | © 2025 AnalytixAI
+  </footer>
 
   <script>
     const { createApp } = Vue;
