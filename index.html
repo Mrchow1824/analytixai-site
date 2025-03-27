@@ -1,81 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Analytix AI - Next Generation Smart Betting Platform">
-  <title>Analytix AI - Precision Betting</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700&family=SF+Pro+Text:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnalytixAI – Smarter Sports Betting</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    // Theme toggle logic
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
 </head>
-<body>
-  <header role="banner">
-    <div class="header-content">
-      <div class="logo">
-        <div class="logo-icon"></div>
-        <span>Analytix AI</span>
-      </div>
-      <nav>
-        <a href="#parlays">Parlays</a>
-        <a href="#auto-picks">Live Picks</a>
-        <a href="#stats">Stats</a>
-        <a href="#premium">Premium</a>
-      </nav>
-    </div>
-  </header>
 
-  <main>
-    <section class="hero">
-      <h1>Precision Betting, AI-Powered</h1>
-      <p>Transform your betting strategy with real-time analytics and smart predictions.</p>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300" id="app">
+  <div class="min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="flex items-center justify-between p-6 bg-white dark:bg-gray-800 shadow-md">
+      <h1 class="text-2xl font-bold tracking-tight">AnalytixAI</h1>
+      <div class="flex items-center gap-4">
+        <button @click="toggleTheme" class="px-3 py-1 border rounded">Toggle Theme</button>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500">Login</button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="text-center py-20 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+      <h2 class="text-4xl font-bold mb-4">Smarter Sports Betting Through AI</h2>
+      <p class="text-lg mb-6">Real-time data, predictive analytics, and machine learning at your fingertips.</p>
+      <a href="#simulator" class="inline-block px-6 py-3 bg-white text-blue-600 font-bold rounded shadow hover:bg-gray-100">Try the Betting Simulator</a>
     </section>
 
-    <section class="highlight" aria-labelledby="parlay-heading">
-      <h2 id="parlay-heading">Today's Smart Parlay</h2>
-      <div class="parlay-card">
-        <article class="game">
-          <p>BYU vs Alabama – Over 171.5</p>
-          <span class="confidence">91% Confidence</span>
-        </article>
-        <article class="game">
-          <p>Ole Miss 1H +1.5 vs Michigan State</p>
-          <span class="confidence">87% Confidence</span>
-        </article>
-        <article class="game">
-          <p>Arizona ML vs Duke</p>
-          <span class="confidence">79% Confidence</span>
-        </article>
-        <article class="game">
-          <p>Houston ML vs Purdue</p>
-          <span class="confidence">83% Confidence</span>
-        </article>
+    <!-- Real-Time Feed -->
+    <section class="p-6" id="feed">
+      <h3 class="text-2xl font-semibold mb-4">Live Betting Feed</h3>
+      <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded shadow">
+        <p class="text-sm">🔄 Connecting to live feed...</p>
+        <!-- Replace with actual WebSocket data -->
       </div>
     </section>
 
-    <section class="highlight" id="auto-picks" aria-labelledby="auto-picks-heading">
-      <h2 id="auto-picks-heading">Live Auto Picks</h2>
-      <div id="autoParlay" class="parlay-card" role="region" aria-live="polite"></div>
-      <button id="refreshOdds">Refresh Now</button>
+    <!-- Betting Simulator -->
+    <section class="p-6 bg-white dark:bg-gray-950" id="simulator">
+      <h3 class="text-2xl font-semibold mb-4">Interactive Betting Simulator</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded shadow">
+          <p class="mb-2">🧠 Select your picks</p>
+          <!-- Add drag/drop UI or checkboxes -->
+          <ul>
+            <li><input type="checkbox" /> Lakers vs Celtics – Lakers Win</li>
+            <li><input type="checkbox" /> Yankees vs Red Sox – Over 8.5 Runs</li>
+          </ul>
+        </div>
+        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded shadow">
+          <p class="mb-2">📊 AI Risk/Reward Analysis</p>
+          <p>Estimated Payout: <strong>3.5x</strong></p>
+          <p>Win Probability: <strong>72%</strong></p>
+        </div>
+      </div>
     </section>
 
-    <section class="highlight" id="performanceDashboard" aria-labelledby="dashboard-heading">
-      <h2 id="dashboard-heading">AI Performance</h2>
+    <!-- AI Insights -->
+    <section class="p-6" id="ai-insights">
+      <h3 class="text-2xl font-semibold mb-4">🔍 AI Insights</h3>
+      <div class="bg-blue-100 dark:bg-blue-900 p-4 rounded shadow">
+        <p>💡 Today's Smart Bet: Take the Knicks spread (+5) — 84% win confidence.</p>
+      </div>
     </section>
 
-    <section class="countdown" aria-labelledby="countdown-heading">
-      <h3 id="countdown-heading">Next Parlay Drop</h3>
-      <div id="timer" aria-live="assertive">00h 00m 00s</div>
-    </section>
-  </main>
+    <!-- Footer -->
+    <footer class="mt-auto p-6 bg-gray-200 dark:bg-gray-800 text-center text-sm text-gray-600 dark:text-gray-400">
+      © 2025 AnalytixAI. Built with intelligence.
+    </footer>
+  </div>
 
-  <footer role="contentinfo">
-    <div class="footer-content">
-      <p>© 2025 Analytix AI. Elevating betting through artificial intelligence.</p>
-    </div>
-  </footer>
-
-  <script src="odds.js" defer></script>
+  <script>
+    const { createApp } = Vue;
+    createApp({
+      methods: {
+        toggleTheme() {
+          const html = document.documentElement;
+          html.classList.toggle('dark');
+          localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        }
+      }
+    }).mount('#app');
+  </script>
 </body>
 </html>
