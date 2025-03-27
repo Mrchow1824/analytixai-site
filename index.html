@@ -1,111 +1,51 @@
-<!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AnalytixAI – Intelligent Betting</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <style>
-    body {
-      background: linear-gradient(to bottom, #0e1623, #1c2431);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    }
-
-    .glass {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-
-    .title-glow {
-      color: #ffffff;
-      text-shadow: 0 1px 2px rgba(255,255,255,0.1);
-    }
-
-    .card-shadow {
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    }
-  </style>
-</head>
-
-<body id="app" class="text-white">
-  <div class="min-h-screen flex flex-col justify-between">
-
-    <!-- Header -->
-    <header class="flex justify-between items-center px-6 py-4 glass sticky top-0 z-20">
-      <h1 class="text-2xl font-semibold title-glow">AnalytixAI</h1>
-      <button @click="toggleTheme" class="text-sm px-4 py-2 border rounded border-gray-400 hover:bg-white hover:text-black transition">Toggle Theme</button>
-    </header>
-
-    <!-- Hero -->
-    <section class="text-center py-20 px-6">
-      <h2 class="text-4xl md:text-5xl font-bold title-glow mb-4">Intelligent Sports Betting Powered by AI</h2>
-      <p class="text-lg text-gray-300 max-w-xl mx-auto mb-8">Predictive analytics. Live data. Smart picks. Designed for clarity, confidence, and class.</p>
-      <a href="#parlay" class="inline-block bg-white text-black font-semibold px-6 py-3 rounded shadow hover:bg-gray-100 transition">See Today’s Top Parlay</a>
-    </section>
-
-    <!-- Sport Picker -->
-    <section class="px-6 mb-12 max-w-5xl mx-auto">
-      <h3 class="text-2xl font-semibold mb-6">Select Your Sport</h3>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div class="glass rounded-lg p-6 text-center hover:scale-105 transition card-shadow">🏀 Basketball</div>
-        <div class="glass rounded-lg p-6 text-center hover:scale-105 transition card-shadow">🏈 Football</div>
-        <div class="glass rounded-lg p-6 text-center hover:scale-105 transition card-shadow">⚾ Baseball</div>
-        <div class="glass rounded-lg p-6 text-center hover:scale-105 transition card-shadow">⚽ Soccer</div>
+<!-- Multi-Sportsbook Live Odds -->
+<section class="px-6 mb-12 max-w-6xl mx-auto">
+  <h3 class="text-2xl font-semibold mb-6">Live Game Odds – Compare Across Sportsbooks</h3>
+  
+  <div class="space-y-6" id="odds-table">
+    <!-- Example Game -->
+    <div class="glass rounded-lg p-6 card-shadow">
+      <div class="mb-4">
+        <h4 class="text-xl font-bold">🏀 Lakers vs Celtics</h4>
+        <p class="text-gray-400 text-sm">Select the best value line across books</p>
       </div>
-    </section>
 
-    <!-- Live Odds -->
-    <section class="px-6 mb-12 max-w-5xl mx-auto">
-      <h3 class="text-2xl font-semibold mb-4">Live Game Odds</h3>
-      <div class="glass rounded-lg p-6 space-y-4 card-shadow">
-        <div class="flex justify-between">
-          <span class="text-lg">Lakers vs Celtics</span>
-          <span class="text-blue-300 font-semibold">+4.5 | O/U 217.5</span>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <!-- Sportsbook Odds -->
+        <div class="glass rounded p-3 border border-gray-600 hover:border-blue-300 cursor-pointer" @click="selectPick('Lakers ML - DraftKings')">
+          <p class="font-semibold">Lakers ML</p>
+          <p class="text-blue-300">+130</p>
+          <p class="text-xs text-gray-400">DraftKings</p>
         </div>
-        <div class="flex justify-between">
-          <span class="text-lg">Cowboys vs Eagles</span>
-          <span class="text-blue-300 font-semibold">-3 | ML +145</span>
+        <div class="glass rounded p-3 border border-gray-600 hover:border-blue-300 cursor-pointer" @click="selectPick('Celtics ML - FanDuel')">
+          <p class="font-semibold">Celtics ML</p>
+          <p class="text-blue-300">-140</p>
+          <p class="text-xs text-gray-400">FanDuel</p>
         </div>
-        <div class="flex justify-between">
-          <span class="text-lg">Real Madrid vs Man City</span>
-          <span class="text-blue-300 font-semibold">Draw +260</span>
+        <div class="glass rounded p-3 border border-gray-600 hover:border-blue-300 cursor-pointer" @click="selectPick('O/U 217.5 - BetMGM')">
+          <p class="font-semibold">O/U 217.5</p>
+          <p class="text-blue-300">-110</p>
+          <p class="text-xs text-gray-400">BetMGM</p>
+        </div>
+        <div class="glass rounded p-3 border border-gray-600 hover:border-blue-300 cursor-pointer" @click="selectPick('Lakers +4.5 - Caesars')">
+          <p class="font-semibold">Lakers +4.5</p>
+          <p class="text-blue-300">-105</p>
+          <p class="text-xs text-gray-400">Caesars</p>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- Parlay Section -->
-    <section class="px-6 mb-16 max-w-5xl mx-auto" id="parlay">
-      <h3 class="text-2xl font-semibold mb-4">AI’s Best Parlay</h3>
-      <div class="glass rounded-lg p-6 space-y-2 card-shadow">
-        <p>✅ Knicks to win (+120)</p>
-        <p>✅ Chiefs to cover -3.5 (-110)</p>
-        <p>✅ Dodgers over 7.5 runs (-105)</p>
-        <div class="mt-4 text-blue-200 font-medium">
-          Total Payout: <span class="text-green-300">6.2x</span> | Confidence: <span class="text-yellow-200">83%</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="glass text-center p-4 text-sm text-gray-400">
-      © 2025 AnalytixAI. Built for precision.
-    </footer>
+    <!-- Add more games dynamically -->
   </div>
 
-  <script>
-    const { createApp } = Vue;
-    createApp({
-      methods: {
-        toggleTheme() {
-          const html = document.documentElement;
-          html.classList.toggle('dark');
-          localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
-        }
-      }
-    }).mount('#app');
-  </script>
-</body>
-</html>
+  <!-- Selected Picks -->
+  <div class="mt-8 glass p-6 rounded-lg card-shadow">
+    <h4 class="text-lg font-semibold mb-2">Your Picks</h4>
+    <ul class="list-disc list-inside text-sm text-blue-200" v-if="selectedPicks.length">
+      <li v-for="(pick, index) in selectedPicks" :key="index">{{ pick }}</li>
+    </ul>
+    <p class="text-gray-400 text-sm" v-else>No picks selected yet.</p>
+
+    <button v-if="selectedPicks.length" class="mt-4 bg-white text-black font-semibold px-4 py-2 rounded hover:bg-gray-200" @click="openParlay">Open Parlay</button>
+  </div>
+</section>
