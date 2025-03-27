@@ -1,186 +1,189 @@
-<!-- SPORTSBOOK ODDS UI & LOGIC -->
-<section class="px-6 mb-12 max-w-6xl mx-auto">
-  <h3 class="text-3xl font-bold mb-4 text-white tracking-tight">Live Odds – Compare Sportsbooks</h3>
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnalytixAI – Live Sportsbook Odds</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
 
-  <!-- Sport Toggle -->
-  <div class="flex gap-4 mb-8">
-    <button
-      v-for="s in ['basketball_nba', 'football_nfl', 'baseball_mlb']"
-      :key="s"
-      @click="changeSport(s)"
-      :class="{
-        'bg-blue-500 text-white': sport === s,
-        'bg-gray-700 text-gray-200 hover:bg-gray-600': sport !== s
-      }"
-      class="px-4 py-2 rounded transition"
-    >
-      {{ s.replace('basketball_', 'NBA').replace('football_', 'NFL').replace('baseball_', 'MLB').toUpperCase() }}
-    </button>
-  </div>
+<body id="app" class="bg-[#0e1623] text-white font-sans">
+  <div class="min-h-screen py-10 px-6 max-w-6xl mx-auto">
 
-  <div v-if="loading" class="text-gray-400">Loading live odds...</div>
-  <div v-if="error" class="text-red-400">Error: {{ error }}</div>
+    <!-- HEADER -->
+    <h1 class="text-4xl font-extrabold mb-4 tracking-tight text-center">AnalytixAI</h1>
+    <p class="text-center text-gray-400 mb-10">Smarter Sports Betting Powered by Real-Time AI Odds</p>
 
-  <div class="space-y-8" v-if="!loading && games.length">
-    <div v-for="game in games" :key="game.id" class="glass rounded-xl p-6 card-shadow border border-gray-700">
-      <div class="mb-4">
-        <h4 class="text-2xl font-semibold text-white">
-          {{ game.teams[0] }} vs {{ game.teams[1] }}
-        </h4>
-        <p class="text-gray-400 text-sm">Tap to select the best odds across books</p>
-      </div>
+    <!-- SPORT TOGGLE -->
+    <div class="flex justify-center gap-4 mb-10">
+      <button
+        v-for="s in ['basketball_nba', 'football_nfl', 'baseball_mlb']"
+        :key="s"
+        @click="changeSport(s)"
+        :class="{
+          'bg-blue-600 text-white': sport === s,
+          'bg-gray-700 text-gray-300 hover:bg-gray-600': sport !== s
+        }"
+        class="px-4 py-2 rounded transition text-sm font-semibold"
+      >
+        {{ s.replace('basketball_', 'NBA').replace('football_', 'NFL').replace('baseball_', 'MLB').toUpperCase() }}
+      </button>
+    </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-        <div
-          v-for="(market, key) in game.bestMarkets"
-          :key="key"
-          class="glass rounded-lg p-4 border transition-all duration-200 cursor-pointer select-none"
-          :class="{
-            'border-blue-400 bg-blue-900/40 scale-[1.02] shadow-md': selectedPicks.includes(`${market.name} - ${market.sportsbook}`),
-            'border-gray-600 hover:border-blue-300 hover:bg-blue-800/20': !selectedPicks.includes(`${market.name} - ${market.sportsbook}`)
-          }"
-          @click="selectPick(`${market.name} - ${market.sportsbook}`)"
-        >
-          <p class="text-base font-semibold text-white">{{ market.name }}</p>
-          <p class="text-blue-300 text-xl font-bold mt-1">{{ market.price > 0 ? '+' + market.price : market.price }}</p>
-          <p class="text-xs text-gray-400 mt-1">{{ market.sportsbook }}</p>
-          <span class="text-[10px] text-emerald-300 mt-2 inline-block">Best Line</span>
+    <!-- ODDS SECTION -->
+    <div v-if="loading" class="text-center text-gray-400">Loading odds...</div>
+    <div v-if="error" class="text-center text-red-400">{{ error }}</div>
+
+    <div v-if="!loading && games.length" class="space-y-10">
+      <div v-for="game in games" :key="game.id" class="glass border border-gray-700 rounded-xl p-6 shadow">
+        <h2 class="text-xl font-bold mb-2">{{ game.teams[0] }} vs {{ game.teams[1] }}</h2>
+        <p class="text-sm text-gray-400 mb-4">Tap to add picks</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div
+            v-for="(market, key) in game.bestMarkets"
+            :key="key"
+            @click="selectPick(`${market.name} - ${market.sportsbook}`)"
+            class="cursor-pointer p-4 rounded-lg border transition transform"
+            :class="{
+              'border-blue-400 bg-blue-900/30 scale-105 shadow-md': selectedPicks.includes(`${market.name} - ${market.sportsbook}`),
+              'border-gray-600 hover:border-blue-300 hover:bg-blue-800/20': !selectedPicks.includes(`${market.name} - ${market.sportsbook}`)
+            }"
+          >
+            <p class="font-semibold text-white">{{ market.name }}</p>
+            <p class="text-blue-300 text-xl mt-1">{{ market.price > 0 ? '+' + market.price : market.price }}</p>
+            <p class="text-xs text-gray-400 mt-1">{{ market.sportsbook }}</p>
+            <span class="text-[10px] text-emerald-300 mt-2 inline-block">Best Line</span>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- PICKS + MODAL -->
+    <div v-if="selectedPicks.length" class="mt-12">
+      <h3 class="text-xl font-semibold mb-2">Your Picks</h3>
+      <ul class="list-disc text-blue-200 ml-6 mb-4">
+        <li v-for="(pick, i) in selectedPicks" :key="i">{{ pick }}</li>
+      </ul>
+      <div class="flex gap-3">
+        <button @click="openParlay" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition font-semibold">
+          Open Parlay
+        </button>
+        <button @click="clearPicks" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-400 transition text-sm">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- PARLAY MODAL -->
+    <div v-if="showModal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+      <div class="bg-white text-black p-6 rounded-lg max-w-md w-full">
+        <h2 class="text-xl font-bold mb-2">Parlay Summary</h2>
+        <p class="mb-4 text-sm text-gray-700">All picks from <strong>{{ modalBook }}</strong></p>
+        <ul class="list-disc ml-6 mb-6 text-sm">
+          <li v-for="(pick, i) in selectedPicks" :key="i">{{ pick }}</li>
+        </ul>
+        <button @click="closeModal" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 w-full">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- Selected Picks -->
-  <div class="mt-10 glass p-6 rounded-xl card-shadow border border-gray-700">
-    <h4 class="text-xl font-semibold mb-2 text-white">Your Picks</h4>
-    <ul class="list-disc list-inside text-blue-200 text-sm space-y-1" v-if="selectedPicks.length">
-      <li v-for="(pick, index) in selectedPicks" :key="index">{{ pick }}</li>
-    </ul>
-    <p class="text-gray-400 text-sm" v-else>No picks selected yet.</p>
+  <!-- VUE SCRIPT -->
+  <script>
+    const { createApp } = Vue;
 
-    <button
-      v-if="selectedPicks.length"
-      class="mt-5 bg-white text-black font-semibold px-5 py-2 rounded hover:bg-gray-100 transition"
-      @click="openParlay"
-    >
-      Open Parlay in Sportsbook
-    </button>
-  </div>
-</section>
-
-<script>
-  const { createApp } = Vue;
-
-  createApp({
-    data() {
-      return {
-        sport: 'basketball_nba',
-        games: [],
-        selectedPicks: JSON.parse(localStorage.getItem('selectedPicks')) || [],
-        loading: true,
-        error: null,
-      };
-    },
-    methods: {
-      toggleTheme() {
-        const html = document.documentElement;
-        const isDark = html.classList.toggle("dark");
-        localStorage.setItem("theme", isDark ? "dark" : "light");
+    createApp({
+      data() {
+        return {
+          sport: 'basketball_nba',
+          games: [],
+          selectedPicks: JSON.parse(localStorage.getItem('selectedPicks')) || [],
+          loading: true,
+          error: null,
+          showModal: false,
+          modalBook: '',
+        };
       },
+      methods: {
+        changeSport(s) {
+          this.sport = s;
+          this.fetchOdds();
+        },
+        selectPick(pick) {
+          const i = this.selectedPicks.indexOf(pick);
+          if (i === -1) this.selectedPicks.push(pick);
+          else this.selectedPicks.splice(i, 1);
+          localStorage.setItem('selectedPicks', JSON.stringify(this.selectedPicks));
+        },
+        clearPicks() {
+          this.selectedPicks = [];
+          localStorage.removeItem('selectedPicks');
+        },
+        openParlay() {
+          const books = this.selectedPicks.map(p => p.split(' - ')[1]);
+          const uniqueBooks = [...new Set(books)];
+          if (uniqueBooks.length === 1) {
+            this.modalBook = uniqueBooks[0];
+            this.showModal = true;
+          } else {
+            alert("All picks must be from the same sportsbook to open a parlay.");
+          }
+        },
+        closeModal() {
+          this.showModal = false;
+        },
+        async fetchOdds() {
+          this.loading = true;
+          this.error = null;
+          const API_KEY = "3daa707ceb363f36b79f44bedc6abe2f";
+          const url = `https://api.the-odds-api.com/v4/sports/${this.sport}/odds?apiKey=${API_KEY}&regions=us&markets=h2h,spreads,totals&oddsFormat=american`;
 
-      selectPick(pick) {
-        const index = this.selectedPicks.indexOf(pick);
-        if (index === -1) {
-          this.selectedPicks.push(pick);
-        } else {
-          this.selectedPicks.splice(index, 1);
-        }
-        localStorage.setItem("selectedPicks", JSON.stringify(this.selectedPicks));
-      },
+          try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error("Failed to fetch odds");
+            const data = await res.json();
 
-      openParlay() {
-        if (!this.selectedPicks.length) {
-          alert("Select at least one pick to create a parlay.");
-          return;
-        }
-
-        // Check if all picks are from same sportsbook
-        const books = this.selectedPicks.map(p => p.split(' - ')[1]);
-        const uniqueBooks = [...new Set(books)];
-
-        if (uniqueBooks.length === 1) {
-          const book = uniqueBooks[0];
-          // Replace this with deep linking logic for actual sportsbook if they support it
-          alert(`Parlay ready for ${book}:\n\n${this.selectedPicks.join('\n')}`);
-        } else {
-          alert("To open the parlay in one sportsbook, all picks must come from the same one.");
-        }
-      },
-
-      changeSport(newSport) {
-        this.sport = newSport;
-        this.fetchOdds();
-      },
-
-      async fetchOdds() {
-        this.loading = true;
-        this.error = null;
-
-        const API_KEY = "3daa707ceb363f36b79f44bedc6abe2f";
-        const region = "us";
-        const market = "h2h,spreads,totals";
-
-        try {
-          const res = await fetch(
-            `https://api.the-odds-api.com/v4/sports/${this.sport}/odds?apiKey=${API_KEY}&regions=${region}&markets=${market}&oddsFormat=american`
-          );
-
-          if (!res.ok) throw new Error("Failed to fetch odds");
-
-          const data = await res.json();
-
-          this.games = data.map(game => {
-            const bestMarkets = {};
-
-            ["h2h", "spreads", "totals"].forEach(type => {
-              game.bookmakers.forEach(book => {
-                const market = book.markets.find(m => m.key === type);
-                if (market && market.outcomes) {
-                  market.outcomes.forEach(outcome => {
-                    const key = `${type}-${outcome.name}`;
-                    if (
-                      !bestMarkets[key] ||
-                      Math.abs(outcome.price) > Math.abs(bestMarkets[key].price)
-                    ) {
-                      bestMarkets[key] = {
-                        ...outcome,
-                        sportsbook: book.title,
-                        market: type,
-                      };
-                    }
-                  });
-                }
+            this.games = data.map(game => {
+              const bestMarkets = {};
+              ["h2h", "spreads", "totals"].forEach(type => {
+                game.bookmakers.forEach(book => {
+                  const market = book.markets.find(m => m.key === type);
+                  if (market && market.outcomes) {
+                    market.outcomes.forEach(outcome => {
+                      const key = `${type}-${outcome.name}`;
+                      if (
+                        !bestMarkets[key] ||
+                        Math.abs(outcome.price) > Math.abs(bestMarkets[key].price)
+                      ) {
+                        bestMarkets[key] = {
+                          ...outcome,
+                          sportsbook: book.title,
+                          market: type,
+                        };
+                      }
+                    });
+                  }
+                });
               });
+              return {
+                id: game.id,
+                teams: game.teams,
+                bestMarkets,
+              };
             });
 
-            return {
-              id: game.id,
-              teams: game.teams,
-              home_team: game.home_team,
-              bestMarkets,
-            };
-          });
-
-          this.loading = false;
-        } catch (err) {
-          this.error = err.message;
-          this.loading = false;
-          console.error(err);
+            this.loading = false;
+          } catch (err) {
+            this.error = err.message;
+            this.loading = false;
+          }
         }
       },
-    },
-    mounted() {
-      this.fetchOdds();
-    },
-  }).mount("#app");
-</script>
+      mounted() {
+        this.fetchOdds();
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
