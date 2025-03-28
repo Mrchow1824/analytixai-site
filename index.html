@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AnalytixAI - AI-Enhanced Sports Betting</title>
-  <!-- Vue.js CDN -->
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <!-- Tailwind CSS CDN -->
+  <!-- Vue.js production build -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Custom styles for the title animation */
+    /* CSS for the color-changing header animation */
     .title {
       font-size: 3.5rem;
       font-weight: 900;
       text-align: center;
-      background: linear-gradient(90deg, #3b82f6, #10b981);
+      background: linear-gradient(90deg, #3b82f6, #10b981, #f97316, #3b82f6);
+      background-size: 200% 200%;
       -webkit-background-clip: text;
       color: transparent;
       animation: gradientShift 5s ease infinite;
@@ -24,193 +25,78 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    /* Sport button styles */
-    .sport-btn {
-      background: #1f2937;
-      color: #9ca3af;
-      transition: all 0.3s ease;
-    }
-    .sport-btn.active, .sport-btn:hover {
-      background: #3b82f6;
-      color: white;
-    }
   </style>
 </head>
-<body class="bg-gray-900 text-white font-sans">
-  <div id="app" class="max-w-7xl mx-auto py-12 px-6 min-h-screen">
-    <!-- Animated Title -->
+<body class="bg-gray-900 text-white">
+  <div id="app" class="max-w-7xl mx-auto py-12 px-6">
+    <!-- Animated header -->
     <h1 class="title">AnalytixAI</h1>
     <p class="text-center text-gray-400 mb-10 text-xl tracking-wide">
       AI-Enhanced Sports Betting. Fast. Beautiful. Smarter Than Ever.
     </p>
-
-    <!-- Sport Toggle Buttons -->
+    <!-- Sport selection buttons -->
     <div class="flex justify-center gap-6 mb-12">
       <button 
         @click="changeSport('basketball_nba')" 
-        :class="{ 'sport-btn': true, 'active': sport === 'basketball_nba' }" 
-        class="px-8 py-3 rounded-xl text-lg font-semibold"
+        :class="{ 'bg-blue-800': sport === 'basketball_nba', 'bg-blue-600': sport !== 'basketball_nba' }"
+        class="px-8 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700"
       >
         NBA
       </button>
       <button 
         @click="changeSport('americanfootball_nfl')" 
-        :class="{ 'sport-btn': true, 'active': sport === 'americanfootball_nfl' }" 
-        class="px-8 py-3 rounded-xl text-lg font-semibold"
+        :class="{ 'bg-blue-800': sport === 'americanfootball_nfl', 'bg-blue-600': sport !== 'americanfootball_nfl' }"
+        class="px-8 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700"
       >
         NFL
       </button>
       <button 
         @click="changeSport('baseball_mlb')" 
-        :class="{ 'sport-btn': true, 'active': sport === 'baseball_mlb' }" 
-        class="px-8 py-3 rounded-xl text-lg font-semibold"
+        :class="{ 'bg-blue-800': sport === 'baseball_mlb', 'bg-blue-600': sport !== 'baseball_mlb' }"
+        class="px-8 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700"
       >
         MLB
       </button>
     </div>
-
-    <!-- Search Bar -->
-    <div class="mb-8">
-      <input 
-        v-model="searchQuery" 
-        type="text" 
-        placeholder="Search by team or game..." 
-        class="w-full px-4 py-3 rounded-xl bg-gray-800/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-
-    <!-- Loading State -->
-    <div v-if="loading" class="text-center text-gray-400 text-lg italic">
-      Loading odds...
-    </div>
-
-    <!-- Error State -->
-    <div v-else-if="error" class="text-center text-red-500 font-bold text-lg">
-      {{ error }}
-    </div>
-
-    <!-- Odds Display with Search Filtering -->
-    <div v-else-if="filteredOdds.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div 
-        v-for="game in filteredOdds" 
-        :key="game.id" 
-        class="bg-gray-800/40 backdrop-blur-lg p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
-      >
-        <h2 class="text-xl font-semibold mb-2">{{ game.teams.join(' vs ') }}</h2>
-        <p class="text-gray-400 mb-4">{{ new Date(game.commence_time).toLocaleString() }}</p>
-        <div v-for="(market, type) in game.bestmarkets" :key="type" class="mt-4">
-          <h3 class="text-lg font-medium capitalize">{{ type }}</h3>
-          <div 
-            v-for="outcome in market.outcomes" 
-            :key="outcome.name" 
-            class="flex justify-between items-center py-2 border-b border-gray-700/50"
-          >
-            <span class="text-gray-300">{{ outcome.name }} ({{ market.sportsbook }})</span>
-            <button 
-              @click="selectPick(game.id, type, outcome.name, outcome.price, market.sportsbook)" 
-              class="text-green-400 hover:text-green-300 font-medium"
-            >
-              {{ outcome.price > 0 ? '+' : '' }}{{ outcome.price }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-else class="text-center text-gray-400 text-lg">
-      No games found matching your search.
-    </div>
-
-    <!-- Picks Summary -->
-    <div 
-      v-if="selectedPicks.length" 
-      class="fixed bottom-6 right-6 bg-gray-800/70 backdrop-blur-md p-6 rounded-xl shadow-xl"
-    >
-      <h3 class="text-lg font-semibold mb-3">Your Picks ({{ selectedPicks.length }})</h3>
-      <ul class="mb-4 text-sm text-gray-300">
-        <li v-for="pick in selectedPicks" :key="pick">{{ pick }}</li>
-      </ul>
-      <div class="flex gap-3">
-        <button 
-          @click="openParlay" 
-          class="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition"
-        >
-          Open Parlay
-        </button>
-        <button 
-          @click="clearPicks" 
-          class="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition"
-        >
-          Clear
-        </button>
-      </div>
-    </div>
-
-    <!-- Parlay Modal -->
-    <div v-if="showModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div class="bg-gray-900/90 backdrop-blur-md text-white p-8 rounded-xl max-w-md w-full shadow-2xl">
-        <h2 class="text-2xl font-bold mb-4">Parlay Summary</h2>
-        <p class="text-gray-400 mb-4">Book: {{ humanBook }}</p>
-        <ul class="mb-6 text-sm text-gray-300">
-          <li v-for="pick in selectedPicks" :key="pick">{{ pick }}</li>
-        </ul>
-        <button 
-          @click="closeModal" 
-          class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"
-        >
-          Close
-        </button>
+    <!-- Loading, error, and odds display -->
+    <div v-if="loading" class="text-center text-gray-400 text-lg italic">Loading odds...</div>
+    <div v-else-if="error" class="text-center text-red-500 font-bold text-lg">{{ error }}</div>
+    <div v-else>
+      <div v-for="game in odds" :key="game.id" class="bg-gray-800 p-6 rounded-xl shadow-lg mb-8">
+        <h2 class="text-2xl font-semibold text-white">{{ game.home_team }} vs {{ game.away_team }}</h2>
+        <p class="text-gray-400">{{ new Date(game.commence_time).toLocaleString() }}</p>
+        <!-- Customize this section to display odds markets (e.g., h2h, spreads) as needed -->
       </div>
     </div>
   </div>
-
   <script>
     const { createApp } = Vue;
     createApp({
       data() {
         return {
           sport: 'basketball_nba', // Default sport
-          odds: [], // Array to hold odds data
+          odds: [], // Array to store odds data
           loading: false, // Loading state
-          error: null, // Error message
-          selectedPicks: [], // Array for selected picks
-          showModal: false, // Modal visibility
-          humanBook: '', // Selected sportsbook
-          searchQuery: '' // Search input value
+          error: null // Error message
         };
       },
-      computed: {
-        // Filter odds based on search query
-        filteredOdds() {
-          if (!this.searchQuery) return this.odds;
-          const query = this.searchQuery.toLowerCase();
-          return this.odds.filter(game => 
-            game.teams.some(team => team.toLowerCase().includes(query))
-          );
-        }
-      },
       methods: {
-        // Fetch odds from the API
+        // Fetch odds data
         async fetchOdds() {
           this.loading = true;
           this.error = null;
           try {
-            const apiKey = '3daa707ceb363f36b79f44bedc6abe2f'; // API key hardcoded
-            const response = await fetch(
-              `https://api.the-odds-api.com/v4/sports/${this.sport}/odds?apiKey=${apiKey}®ions=us&markets=h2h,spreads,totals`
-            );
+            // Option 1: Fetch via serverless function (recommended for security)
+            const response = await fetch(`/api/fetchOdds?sport=${this.sport}`);
+            
+            // Option 2: Direct fetch from The Odds API (uncomment and replace API key if needed)
+            // IMPORTANT: This exposes your API key to the client. Use a serverless function in production.
+            // const apiKey = 'YOUR_API_KEY_HERE';
+            // const response = await fetch(`https://api.the-odds-api.com/v4/sports/${this.sport}/odds?apiKey=${apiKey}®ions=us&markets=h2h,spreads,totals`);
+            
             if (!response.ok) throw new Error('Failed to fetch odds');
             const data = await response.json();
-            // Map API data to a cleaner format
-            this.odds = data.map(game => ({
-              id: game.id,
-              teams: [game.home_team, game.away_team],
-              commence_time: game.commence_time,
-              bestmarkets: {
-                h2h: game.bookmakers[0]?.markets.find(m => m.key === 'h2h') || { outcomes: [], sportsbook: 'N/A' },
-                spreads: game.bookmakers[0]?.markets.find(m => m.key === 'spreads') || { outcomes: [], sportsbook: 'N/A' },
-                totals: game.bookmakers[0]?.markets.find(m => m.key === 'totals') || { outcomes: [], sportsbook: 'N/A' }
-              }
-            }));
+            this.odds = data;
           } catch (err) {
             this.error = err.message;
           } finally {
@@ -221,34 +107,10 @@
         changeSport(sport) {
           this.sport = sport;
           this.fetchOdds();
-        },
-        // Add a pick to the selectedPicks array
-        selectPick(gameId, type, outcome, price, book) {
-          const pick = `${gameId} - ${type} - ${outcome} - ${price} - ${book}`;
-          this.selectedPicks.push(pick);
-        },
-        // Clear all selected picks
-        clearPicks() {
-          this.selectedPicks = [];
-        },
-        // Open parlay modal if all picks are from the same book
-        openParlay() {
-          const books = this.selectedPicks.map(p => p.split(' - ')[4]);
-          const uniqueBooks = [...new Set(books)];
-          if (uniqueBooks.length === 1) {
-            this.humanBook = uniqueBooks[0];
-            this.showModal = true;
-          } else {
-            alert('All picks must be from the same sportsbook');
-          }
-        },
-        // Close the parlay modal
-        closeModal() {
-          this.showModal = false;
         }
       },
       mounted() {
-        // Fetch odds when the app loads
+        // Fetch odds when the app mounts
         this.fetchOdds();
       }
     }).mount('#app');
