@@ -3,16 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AnalytixAI – Live Sportsbook Odds</title>
+  <title>AnalytixAI – Smarter Sports Betting</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body {
+      background: radial-gradient(ellipse at top left, #0e1623, #0a101b);
+      font-family: 'Inter', sans-serif;
+    }
+    .glass {
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    .hover-glow:hover {
+      box-shadow: 0 0 10px #3b82f6;
+      transition: box-shadow 0.3s ease-in-out;
+    }
+  </style>
 </head>
-<body id="app" class="bg-[#0e1623] text-white font-sans">
-  <div class="min-h-screen py-10 px-6 max-w-6xl mx-auto">
-    <h1 class="text-4xl font-extrabold mb-4 text-center">AnalytixAI</h1>
-    <p class="text-center text-gray-400 mb-10">AI-enhanced Sportsbook Insights — Real-Time, Personalized, Powerful</p>
 
-    <!-- Toggle -->
+<body id="app" class="text-white">
+  <div class="max-w-6xl mx-auto py-12 px-6 min-h-screen">
+    <h1 class="text-5xl font-bold text-center mb-4 tracking-tight">AnalytixAI</h1>
+    <p class="text-center text-gray-400 mb-12 text-lg">Smarter Sports Betting. Real-Time. AI-Powered. Beautiful.</p>
+
+    <!-- SPORT TOGGLE -->
     <div class="flex justify-center gap-4 mb-10">
       <button
         v-for="s in ['basketball_nba', 'football_nfl', 'baseball_mlb']"
@@ -22,28 +37,30 @@
           'bg-blue-600 text-white': sport === s,
           'bg-gray-700 text-gray-300 hover:bg-gray-600': sport !== s
         }"
-        class="px-4 py-2 rounded transition text-sm font-semibold"
+        class="px-5 py-2 rounded-lg transition text-sm font-semibold"
       >
         {{ s.replace('basketball_', 'NBA').replace('football_', 'NFL').replace('baseball_', 'MLB').toUpperCase() }}
       </button>
     </div>
 
-    <!-- Odds -->
-    <div v-if="loading" class="text-center text-gray-400">Loading odds...</div>
-    <div v-if="error" class="text-center text-red-400">{{ error }}</div>
+    <!-- LOADING / ERROR -->
+    <div v-if="loading" class="text-center text-gray-400 text-lg">Loading odds...</div>
+    <div v-if="error" class="text-center text-red-400 text-md">{{ error }}</div>
 
+    <!-- GAMES -->
     <div v-if="!loading && games.length" class="space-y-10">
-      <div v-for="game in games" :key="game.id" class="glass border border-gray-700 rounded-xl p-6 shadow">
-        <h2 class="text-xl font-bold mb-2">{{ game.teams[0] }} vs {{ game.teams[1] }}</h2>
+      <div v-for="game in games" :key="game.id" class="glass border border-gray-800 rounded-xl p-6 shadow-lg">
+        <h2 class="text-2xl font-semibold mb-2">{{ game.teams[0] }} vs {{ game.teams[1] }}</h2>
+        <p class="text-sm text-gray-400 mb-4">Tap to select best line across books</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div
             v-for="(market, key) in game.bestMarkets"
             :key="key"
             @click="selectPick(`${market.name} - ${market.sportsbook}`)"
-            class="cursor-pointer p-4 rounded-lg border transition transform"
+            class="p-4 rounded-lg border cursor-pointer transition hover-glow select-none"
             :class="{
               'border-blue-400 bg-blue-900/30 scale-105 shadow-md': selectedPicks.includes(`${market.name} - ${market.sportsbook}`),
-              'border-gray-600 hover:border-blue-300 hover:bg-blue-800/20': !selectedPicks.includes(`${market.name} - ${market.sportsbook}`)
+              'border-gray-700 hover:border-blue-300 hover:bg-blue-800/10': !selectedPicks.includes(`${market.name} - ${market.sportsbook}`)
             }"
           >
             <p class="font-semibold">{{ market.name }}</p>
@@ -55,21 +72,25 @@
       </div>
     </div>
 
-    <!-- Picks -->
+    <!-- PICKS SUMMARY -->
     <div v-if="selectedPicks.length" class="mt-12">
-      <h3 class="text-xl font-semibold mb-2">Your Picks</h3>
+      <h3 class="text-2xl font-semibold mb-2">Your Picks</h3>
       <ul class="list-disc text-blue-200 ml-6 mb-4">
         <li v-for="(pick, i) in selectedPicks" :key="i">{{ pick }}</li>
       </ul>
       <div class="flex gap-3">
-        <button @click="openParlay" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition font-semibold">Open Parlay</button>
-        <button @click="clearPicks" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-400 transition text-sm">Clear</button>
+        <button @click="openParlay" class="bg-white text-black px-5 py-2 rounded hover:bg-gray-200 transition font-semibold">
+          Open Parlay
+        </button>
+        <button @click="clearPicks" class="bg-red-500 text-white px-5 py-2 rounded hover:bg-red-400 transition text-sm">
+          Clear
+        </button>
       </div>
     </div>
 
-    <!-- Parlay Modal -->
+    <!-- MODAL -->
     <div v-if="showModal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-      <div class="bg-white text-black p-6 rounded-lg max-w-md w-full">
+      <div class="bg-white text-black p-6 rounded-lg max-w-md w-full shadow-2xl">
         <h2 class="text-xl font-bold mb-2">Parlay Summary</h2>
         <p class="mb-4 text-sm text-gray-700">All picks from <strong>{{ modalBook }}</strong></p>
         <ul class="list-disc ml-6 mb-6 text-sm">
@@ -80,7 +101,7 @@
     </div>
   </div>
 
-  <!-- Vue Logic -->
+  <!-- VUE APP -->
   <script>
     const { createApp } = Vue;
     createApp({
@@ -138,10 +159,7 @@
                   if (market && market.outcomes) {
                     market.outcomes.forEach(outcome => {
                       const key = `${type}-${outcome.name}`;
-                      if (
-                        !bestMarkets[key] ||
-                        Math.abs(outcome.price) > Math.abs(bestMarkets[key].price)
-                      ) {
+                      if (!bestMarkets[key] || Math.abs(outcome.price) > Math.abs(bestMarkets[key].price)) {
                         bestMarkets[key] = {
                           ...outcome,
                           sportsbook: book.title,
