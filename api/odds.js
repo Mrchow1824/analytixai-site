@@ -1,13 +1,12 @@
-
 export default async function handler(req, res) {
-  const apiKey = "3daa707ceb363f36b79f44bedc6abe2f";
-  const sport = "basketball_ncaab"; // Change this to any sport you'd like
+  const apiKey = process.env.ODDS_API_KEY;
+  const sport = req.query.sport || "basketball_ncaab";
   const region = "us";
   const market = "spreads";
 
   try {
     const response = await fetch(
-      `https://api.the-odds-api.com/v4/sports/${sport}/odds/?apiKey=${apiKey}&regions=${region}&markets=${market}`
+      `https://api.the-odds-api.com/v4/sports/${sport}/odds/?apiKey=${apiKey}&regions=${region}&markets=${market}&oddsFormat=american`
     );
 
     if (!response.ok) {
@@ -15,14 +14,20 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
+
     const picks = data.slice(0, 3).map((game) => {
-      const book = game.bookmakers[0];
-      const market = book.markets[0];
+      const bookmaker = game.bookmakers?.[0];
+      const market = bookmaker?.markets?.[0];
+
       return {
         teams: game.teams,
         commence_time: game.commence_time,
-        bookmaker: book.title,
-        pick: market.outcomes
+        bookmaker: bookmaker?.title || "Unknown",
+        pick: market?.outcomes?.map((o) => ({
+          name: o.name,
+          point: o.point,
+          price: o.price
+        })) || []
       };
     });
 
