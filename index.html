@@ -51,8 +51,9 @@
     <!-- Header Section -->
     <header class="text-center mb-10">
       <h1 class="text-5xl font-bold text-white mb-3 animate-pulse">Badass AI Parlay Picks</h1>
-      <p class="text-lg text-gray-300">
-        Harness the power of AI to generate the smartest parlay picks for today.
+      <!-- Rotating Quotes Section -->
+      <p class="text-xl text-gray-300 italic">
+        {{ currentQuote }}
       </p>
     </header>
     
@@ -102,7 +103,26 @@
         return {
           parlays: [],
           loading: false,
+          quotes: [
+            "Scared money don't make money",
+            "Fortune favors the bold",
+            "Winners never quit, and quitters never win",
+            "Bet smart, win big",
+            "Risk it for the biscuit"
+          ],
+          currentQuoteIndex: 0,
         };
+      },
+      computed: {
+        currentQuote() {
+          return this.quotes[this.currentQuoteIndex];
+        }
+      },
+      mounted() {
+        // Rotate quotes every 5 seconds
+        setInterval(() => {
+          this.currentQuoteIndex = (this.currentQuoteIndex + 1) % this.quotes.length;
+        }, 5000);
       },
       methods: {
         generateParlay() {
