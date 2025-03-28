@@ -2,128 +2,123 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AnalytixAI - Winning Parlay Advisor</title>
-  <!-- Vue.js production build -->
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Badass AI Parlay Picks</title>
+  <!-- Link to custom stylesheet (ensure this path works on your server) -->
+  <link rel="stylesheet" href="/api/styles.css" />
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 via CDN -->
+  <script src="https://unpkg.com/vue@3"></script>
   <style>
-    /* Header animation styles */
-    .title {
-      font-size: 3.5rem;
-      font-weight: 900;
-      text-align: center;
-      background: linear-gradient(90deg, #3b82f6, #10b981, #f97316, #3b82f6);
-      background-size: 200% 200%;
-      -webkit-background-clip: text;
-      color: transparent;
-      animation: gradientShift 5s ease infinite;
+    /* Global body styles */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
+      min-height: 100vh;
+      color: #f5f5f7;
     }
-    @keyframes gradientShift {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
+    /* Animated gradient background overlay */
+    .animated-gradient {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: linear-gradient(270deg, #1c1c1e, #0A84FF, #32D74B, #FF453A);
+      background-size: 800% 800%;
+      animation: gradientAnimation 15s ease infinite;
+      opacity: 0.3;
+    }
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
+    }
+    /* Glassmorphism effect */
+    .glass {
+      background: rgba(28, 28, 30, 0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
-<body class="bg-gray-900 text-white">
-  <div id="app" class="max-w-4xl mx-auto py-12 px-6">
-    <h1 class="title">AnalytixAI</h1>
-    <p class="text-center text-gray-400 mb-10 text-xl tracking-wide">
-      Get Today’s Winning Parlay – Expert AI-Generated Picks.
-    </p>
-
-    <!-- Parlay Suggestion Section -->
-    <div class="bg-gray-800 p-6 rounded-xl shadow-lg mb-8">
-      <h2 class="text-2xl font-semibold mb-4">Today's Suggested Parlay</h2>
-      <div v-if="loading" class="text-gray-400 italic">Loading parlay suggestion...</div>
-      <div v-else-if="error" class="text-red-500">{{ error }}</div>
-      <div v-else-if="parlay">
-        <ul class="list-disc pl-5">
-          <li v-for="(leg, index) in parlay.legs" :key="index">
-            <strong>{{ leg.home_team }} vs {{ leg.away_team }}:</strong>
-            Pick <em>{{ leg.pick }}</em> at {{ new Date(leg.commence_time).toLocaleString() }}
-          </li>
-        </ul>
-        <p class="mt-4">Estimated win chance: {{ parlay.winChance }}%</p>
-      </div>
-      <button @click="fetchParlay" class="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-lg font-semibold">
-        Get New Suggestion
-      </button>
-    </div>
-
-    <!-- Report Outcome Section -->
-    <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
-      <h2 class="text-2xl font-semibold mb-4">Report Parlay Outcome</h2>
-      <p class="mb-2">Did today's parlay win?</p>
-      <div class="flex gap-4">
-        <button @click="reportOutcome(true)" class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-lg font-semibold">
-          Won
-        </button>
-        <button @click="reportOutcome(false)" class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg text-lg font-semibold">
-          Lost
+<body>
+  <!-- Animated gradient background -->
+  <div class="animated-gradient"></div>
+  
+  <div id="app" class="relative z-10 p-6">
+    <!-- Header Section -->
+    <header class="text-center mb-10">
+      <h1 class="text-5xl font-bold text-white mb-3 animate-pulse">Badass AI Parlay Picks</h1>
+      <p class="text-lg text-gray-300">
+        Harness the power of AI to generate the smartest parlay picks for today.
+      </p>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto">
+      <div class="flex justify-center mb-8">
+        <button 
+          @click="generateParlay" 
+          class="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+          Generate Today's Picks
         </button>
       </div>
-      <div v-if="reportMessage" class="mt-4 text-gray-300">{{ reportMessage }}</div>
-    </div>
+      
+      <!-- Loading Indicator -->
+      <div v-if="loading" class="flex justify-center mb-8">
+        <div class="w-12 h-12 border-4 border-t-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+      
+      <!-- AI-Generated Parlay Picks Display -->
+      <div v-if="parlays.length" class="grid grid-cols-1 gap-6">
+        <div v-for="(parlay, index) in parlays" :key="index" class="glass p-6 transition transform hover:scale-105">
+          <h2 class="text-2xl font-semibold text-white mb-3">Parlay Pick {{ index + 1 }}</h2>
+          <ul class="space-y-2">
+            <li v-for="(leg, idx) in parlay.legs" :key="idx" class="text-gray-200">
+              <span class="font-bold">{{ leg.match }}</span> - 
+              <span class="text-green-400">{{ leg.odds }}</span>
+            </li>
+          </ul>
+          <p class="mt-4 text-gray-400">
+            Expected ROI: <span class="font-bold">{{ parlay.roi }}%</span>
+          </p>
+        </div>
+      </div>
+      
+      <!-- Placeholder if no picks have been generated -->
+      <div v-if="!loading && !parlays.length" class="text-center text-gray-400">
+        No picks generated yet. Click the button above to get started.
+      </div>
+    </main>
   </div>
-
+  
+  <!-- Vue App Script -->
   <script>
     const { createApp } = Vue;
-
     createApp({
       data() {
         return {
-          parlay: null,       // AI generated parlay suggestion object
-          loading: false,     // Loading state for suggestion
-          error: null,        // Error message for suggestion fetching
-          reportMessage: ''   // Message after reporting outcome
+          parlays: [],
+          loading: false,
         };
       },
       methods: {
-        async fetchParlay() {
+        generateParlay() {
           this.loading = true;
-          this.error = null;
-          this.reportMessage = '';
-          try {
-            const response = await fetch('/api/getParlaySuggestion');
-            if (!response.ok) {
-              throw new Error('Failed to fetch parlay suggestion');
-            }
-            this.parlay = await response.json();
-          } catch (err) {
-            this.error = err.message;
-          } finally {
-            this.loading = false;
-          }
-        },
-        async reportOutcome(didWin) {
-          if (!this.parlay) {
-            this.reportMessage = "Please get a parlay suggestion first.";
-            return;
-          }
-          try {
-            const response = await fetch('/api/reportResult', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                parlayId: this.parlay.id,
-                win: didWin
-              })
+          // Fetch AI-generated parlay picks from backend
+          fetch('/api/generateParlay')
+            .then(response => response.json())
+            .then(data => {
+              this.parlays = data;
+              this.loading = false;
+            })
+            .catch(error => {
+              console.error("Error generating parlay picks:", error);
+              this.loading = false;
             });
-            if (!response.ok) {
-              throw new Error('Failed to report outcome');
-            }
-            const result = await response.json();
-            this.reportMessage = result.message;
-          } catch (err) {
-            this.reportMessage = err.message;
-          }
         }
-      },
-      mounted() {
-        this.fetchParlay();
       }
     }).mount('#app');
   </script>
