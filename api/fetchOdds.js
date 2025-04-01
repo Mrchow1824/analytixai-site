@@ -1,41 +1,72 @@
-// /api/fetchOdds.js
+const axios = require('axios');
 
-export default async function handler(req, res) {
-  try {
-    // 1. Read the sport from query params or default to 'basketball_nba'
-    const sport = req.query.sport || 'basketball_nba';
-    
-    // 2. Construct the API endpoint
-    //    Check The Odds API docs for other params like region (us, uk), oddsFormat, etc.
-    const apiKey = process.env.ODDS_API_KEY; // Make sure this is set in Vercel
-    const url = `https://api.the-odds-api.com/v4/sports/${sport}/odds?apiKey=${apiKey}&regions=us&markets=h2h,spreads,totals&oddsFormat=american`;
-    
-    // 3. Fetch data from The Odds API
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch odds: ${response.statusText}`);
-    }
-    
-    // 4. Parse the JSON data
-    const data = await response.json();
-    
-    // 5. (Optional) Filter or process the data for your needs
-    //    For example, we can pick a few games or transform the structure.
-    const processed = data.map(game => {
-      return {
-        gameId: game.id,
-        teams: game.away_team + ' vs. ' + game.home_team,
-        bookmakers: game.bookmakers.map(bm => ({
-          name: bm.key,
-          markets: bm.markets
-        }))
-      };
-    });
-    
-    // 6. Return the processed data
-    res.status(200).json(processed);
-  } catch (error) {
-    console.error('Error in fetchOdds:', error);
-    res.status(500).json({ error: error.message });
+// Use environment variable for API key (set in Vercel dashboard)
+const API_KEY = process.env.ODDS_API_KEY;
+const SPORT = 'baseball_mlb';
+const REGIONS = 'us'; // US odds
+const MARKETS = 'h2h'; // Money line odds
+const ODDS_FORMAT = 'american'; // +150, -110, etc.
+const DATE = new Date().toISOString().split('T')[0]; // Today’s date (e.g., 2025-04-01)
+
+const fetchOdds = async () => {
+  // Validate API key presence
+  if (!API_KEY) {
+    throw new Error('ODDS_API_KEY environment variable is not set');
   }
-}
+
+  try {
+    const response = await axios.get(
+      `https://api.the-odds-api.com/v4/sports/${SPORT}/odds`,
+      {
+        params: {
+          apiKey: API_KEY,
+          regions: REGIONS,
+          markets: MARKETS,
+          oddsFormat: ODDS_FORMAT,
+          date: DATE,
+        },
+      }
+    );
+
+    // Log remaining requests for monitoring
+    const remainingRequests = response.headers['x-requests-remaining'];
+    console.log(`The Odds API - Remaining Requests: ${remainingRequests}`);
+
+    // Process the odds data
+    const games = response.data
+      .map(game => {
+        // Check if bookmakers and markets exist
+        const outcomes = game.bookmakers?.[0]?.markets?.[0]?.outcomes;
+        if (!outcomes) {
+          console.warn(`No odds available for game: ${game.home_team} vs ${game.away_team}`);
+          return null;
+        }
+
+        // Map odds to a simpler structure for generateParlay.js
+        const oddsMap = {};
+        outcomes.forEach(outcome => {
+          oddsMap[outcome.name] = outcome.price.toString(); // Convert to string (e.g., "-150")
+        });
+
+        return {
+          homeTeam: game.home_team,
+          awayTeam: game.away_team,
+          odds: oddsMap, // e.g., { "Los Angeles Dodgers": "-150", "Arizona Diamondbacks": "+130" }
+          commenceTime: game.commence_time,
+        };
+      })
+      .filter(game => game !== null); // Remove games with no odds
+
+    // Check if any games were returned
+    if (games.length === 0) {
+      throw new Error('No MLB games with odds available for today');
+    }
+
+    return games;
+  } catch (error) {
+    console.error('Error fetching odds:', error.message);
+    throw new Error(`Failed to fetch odds: ${error.message}`);
+  }
+};
+
+module.exports = fetchOdds;
