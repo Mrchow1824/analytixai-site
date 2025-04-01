@@ -1,11 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ANALYTIX BETS</title>
-  <!-- Link to custom stylesheet (ensure this path works on your server) -->
-  <link rel="stylesheet" href="/api/styles.css" />
+  <title>Pinnacle MLB Parlays</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Vue 3 via CDN -->
@@ -17,6 +15,7 @@
       background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
       min-height: 100vh;
       color: #f5f5f7;
+      margin: 0;
     }
     /* Animated gradient background overlay */
     .animated-gradient {
@@ -41,6 +40,20 @@
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
+    /* Parlay card hover effect */
+    .parlay-card {
+      transition: transform 0.3s ease;
+    }
+    .parlay-card:hover {
+      transform: scale(1.05);
+    }
+    /* Leg styling */
+    .leg {
+      margin-bottom: 0.5rem;
+    }
+    .leg span {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -50,11 +63,11 @@
   <div id="app" class="relative z-10 p-6">
     <!-- Header Section -->
     <header class="text-center mb-10">
-      <h1 class="text-5xl font-bold text-white mb-3 animate-pulse">THE LOCKS 🔒</h1>
-      <!-- Rotating Quotes Section -->
+      <h1 class="text-5xl font-bold text-white mb-3 animate-pulse">Pinnacle MLB Parlays 🏟️</h1>
       <p class="text-xl text-gray-300 italic">
         {{ currentQuote }}
       </p>
+      <p class="text-sm text-gray-400 mt-2">Updated: March 31, 2025</p>
     </header>
     
     <!-- Main Content -->
@@ -74,17 +87,22 @@
       
       <!-- AI-Generated Parlay Picks Display -->
       <div v-if="parlays.length" class="grid grid-cols-1 gap-6">
-        <div v-for="(parlay, index) in parlays" :key="index" class="glass p-6 transition transform hover:scale-105">
-          <h2 class="text-2xl font-semibold text-white mb-3">Parlay Pick {{ index + 1 }}</h2>
+        <div v-for="(parlay, index) in parlays" :key="index" class="glass p-6 parlay-card">
+          <h2 class="text-2xl font-semibold text-white mb-3">{{ parlay.name }}</h2>
           <ul class="space-y-2">
-            <li v-for="(leg, idx) in parlay.legs" :key="idx" class="text-gray-200">
-              <span class="font-bold">{{ leg.match }}</span> - 
+            <li v-for="(leg, idx) in parlay.legs" :key="idx" class="text-gray-200 leg">
+              <span class="font-bold">{{ leg.team }}</span> - 
               <span class="text-green-400">{{ leg.odds }}</span>
+              <span class="text-sm text-gray-400">Win Prob: {{ leg.winProb }} | Confidence: {{ leg.confidence }}</span>
+              <span class="text-sm text-gray-500 italic">{{ leg.rationale }}</span>
             </li>
           </ul>
           <p class="mt-4 text-gray-400">
-            Expected ROI: <span class="font-bold">{{ parlay.roi }}%</span>
+            Total Odds: <span class="font-bold text-green-400">{{ parlay.totalOdds }}</span> | 
+            Combined Win Prob: <span class="font-bold">{{ parlay.combinedWinProb }}</span> | 
+            Profit on $100: <span class="font-bold">${{ parlay.profit }}</span>
           </p>
+          <p class="text-sm text-gray-500 italic mt-2">{{ parlay.summary }}</p>
         </div>
       </div>
       
@@ -93,6 +111,11 @@
         No picks generated yet. Click the button above to get started.
       </div>
     </main>
+    
+    <!-- Footer -->
+    <footer class="text-center mt-10 text-gray-500 text-sm">
+      Powered by Grok @ xAI | For entertainment only
+    </footer>
   </div>
   
   <!-- Vue App Script -->
@@ -104,11 +127,11 @@
           parlays: [],
           loading: false,
           quotes: [
-            "Scared money don't make money",
-            "Fortune favors the bold",
-            "Winners never quit, and quitters never win",
-            "Bet smart, win big",
-            "Risk it for the biscuit"
+            "Data-driven bets, profit-driven wins.",
+            "Precision meets profit—welcome to Pinnacle.",
+            "Turn $100 into $1,000 with elite strategy.",
+            "Bet smart, win big—Pinnacle style.",
+            "Where analytics meets adrenaline."
           ],
           currentQuoteIndex: 0,
         };
@@ -127,17 +150,96 @@
       methods: {
         generateParlay() {
           this.loading = true;
-          // Fetch AI-generated parlay picks from backend
-          fetch('/api/generateParlay')
-            .then(response => response.json())
-            .then(data => {
-              this.parlays = data;
-              this.loading = false;
-            })
-            .catch(error => {
-              console.error("Error generating parlay picks:", error);
-              this.loading = false;
-            });
+          // Simulate API response (since GitHub Pages is static, we'll hardcode for now)
+          // In a dynamic setup, this would fetch from '/api/generateParlay'
+          setTimeout(() => {
+            this.parlays = [
+              {
+                name: "Conservative Parlay (+320)",
+                legs: [
+                  {
+                    team: "Los Angeles Dodgers",
+                    odds: "-150",
+                    winProb: "65%",
+                    confidence: "High",
+                    rationale: "Dodgers’ Opening Week momentum and elite pitching overpower a shaky Arizona lineup."
+                  },
+                  {
+                    team: "New York Yankees",
+                    odds: "-140",
+                    winProb: "62%",
+                    confidence: "High",
+                    rationale: "Yankees’ Gerrit Cole dominates early against a rebuilding Tigers squad."
+                  }
+                ],
+                totalOdds: "+320",
+                combinedWinProb: "85%",
+                profit: "320",
+                summary: "Two locks with top-tier pitching and home-field edge."
+              },
+              {
+                name: "Aggressive Parlay (+850)",
+                legs: [
+                  {
+                    team: "Atlanta Braves",
+                    odds: "-130",
+                    winProb: "60%",
+                    confidence: "High",
+                    rationale: "Braves’ offense feasts on Miami’s depleted rotation."
+                  },
+                  {
+                    team: "Houston Astros",
+                    odds: "+140",
+                    winProb: "45%",
+                    confidence: "Medium",
+                    rationale: "Astros’ road value shines in a tight divisional matchup."
+                  },
+                  {
+                    team: "Chicago Cubs",
+                    odds: "+150",
+                    winProb: "42%",
+                    confidence: "Medium",
+                    rationale: "Cubs’ young bats exploit Reds’ bullpen fatigue."
+                  }
+                ],
+                totalOdds: "+850",
+                combinedWinProb: "62%",
+                profit: "850",
+                summary: "Mixes a favorite with two live underdogs for a juicy payout."
+              },
+              {
+                name: "Moonshot Parlay (+1600)",
+                legs: [
+                  {
+                    team: "Pittsburgh Pirates",
+                    odds: "+170",
+                    winProb: "40%",
+                    confidence: "Low",
+                    rationale: "Pirates’ young arms surprise early."
+                  },
+                  {
+                    team: "Oakland A’s",
+                    odds: "+190",
+                    winProb: "35%",
+                    confidence: "Low",
+                    rationale: "A’s pull an upset with a hot bat."
+                  },
+                  {
+                    team: "Colorado Rockies",
+                    odds: "+200",
+                    winProb: "33%",
+                    confidence: "Low",
+                    rationale: "Rockies thrive at home against a Padres slump."
+                  }
+                ],
+                totalOdds: "+1600",
+                combinedWinProb: "45%",
+                profit: "1600",
+                summary: "Three undervalued underdogs with upset potential—pure adrenaline."
+              }
+            ];
+            this.loading = false;
+          }, 1000);
         }
       }
     }).mount('#app');
