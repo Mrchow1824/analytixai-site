@@ -1,6 +1,5 @@
 const axios = require('axios');
-const fs = require('fs').promises;
-const path = require('path');
+const { kv } = require('@vercel/kv');
 
 // Use environment variable for API key
 const API_KEY = process.env.ODDS_API_KEY;
@@ -9,8 +8,8 @@ const REGIONS = 'us'; // US odds
 const MARKETS = 'h2h'; // Money line odds
 const ODDS_FORMAT = 'american'; // +150, -110, etc.
 const DATE = new Date().toISOString().split('T')[0]; // Today’s date (e.g., 2025-04-01)
-const CACHE_FILE = '/tmp/oddsCache.json'; // Use /tmp for Vercel
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const CACHE_KEY = `odds:${DATE}`;
+const CACHE_DURATION = 24 * 60 * 60; // 24 hours in seconds
 
 const fetchOdds = async () => {
   if (!API_KEY) {
@@ -20,14 +19,12 @@ const fetchOdds = async () => {
   // Check if cache exists and is fresh
   try {
     const startCacheRead = Date.now();
-    const cacheData = await fs.readFile(CACHE_FILE, 'utf8');
-    const cache = JSON.parse(cacheData);
-    const cacheAge = Date.now() - cache.timestamp;
+    const cachedData = await kv.get(CACHE_KEY);
     console.log(`Cache read time: ${Date.now() - startCacheRead}ms`);
 
-    if (cache.date === DATE && cacheAge < CACHE_DURATION) {
+    if (cachedData) {
       console.log('Returning cached odds data');
-      return cache.odds;
+      return cachedData.odds;
     }
   } catch (error) {
     console.log('No valid cache found, fetching new odds:', error.message);
@@ -90,9 +87,9 @@ const fetchOdds = async () => {
       timestamp: Date.now(),
       odds: games,
     };
-    await fs.writeFile(CACHE_FILE, JSON.stringify(cacheData, null, 2));
+    await kv.set(CACHE_KEY, cacheData, { ex: CACHE_DURATION });
     console.log(`Cache write time: ${Date.now() - startCacheWrite}ms`);
-    console.log('Odds cached successfully');
+    console.log('Odds cached successfully in Vercel KV');
 
     return games;
   } catch (error) {
