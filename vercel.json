@@ -1,0 +1,9 @@
+// vercel.json
+{
+  "crons": [
+    {
+      "path": "/api/prefetchOdds",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
