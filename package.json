@@ -1,15 +1,14 @@
 {
-  "name": "analytiXai-site",
+  "name": "analytical-site",
   "version": "1.0.0",
   "scripts": {
-    "start": "node server.js",
-    "vercel-build": "echo 'No build step required'"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "axios": "^1.6.8"
-  },
-  "engines": {
-    "node": "18.x"
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   }
 }
